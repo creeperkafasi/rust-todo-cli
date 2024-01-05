@@ -28,16 +28,62 @@ fn main() {
         match action
         {
             Some('A') | Some('a') => {
+                print!("Task title: ");
+                std::io::stdout().flush();
                 let mut taskText = String::new();
                 std::io::stdin().read_line(&mut taskText);
                 tasks.push(Task {
-                    text: taskText.trim_end().to_string(),
+                    text: taskText.trim().to_string(),
                     completed: false,
                 });
             },
-            Some('D') | Some('d') => {},
-            Some('E') | Some('e') => {},
-            Some('C') | Some('c') => {},
+            Some('D') | Some('d') => {
+                print!("Task id: ");
+                std::io::stdout().flush();
+                let mut buf = String::new();
+                std::io::stdin().read_line(&mut buf);
+                tasks.remove(buf.trim().parse::<usize>().unwrap() - 1);
+            },
+            Some('E') | Some('e') => {
+                print!("Task id: ");
+                std::io::stdout().flush();
+                let mut buf = String::new();
+                std::io::stdin().read_line(&mut buf);
+                let index = match buf.trim().parse::<usize>(){
+                    Ok(id) => id - 1,
+                    Err(e) => {
+                        println!("Please enter a valid number!");
+                        continue 'running;
+                    }
+                };
+                if index >= tasks.len() {
+                    println!("Please enter a valid id!");
+                    continue 'running;
+                }
+                buf.clear();
+                print!("Task title: ");
+                std::io::stdout().flush();
+                std::io::stdin().read_line(&mut buf);
+                tasks.get_mut(index).unwrap().text = buf.trim().to_string();
+            },
+            Some('C') | Some('c') => {
+                print!("Task id: ");
+                std::io::stdout().flush();
+                let mut buf = String::new();
+                std::io::stdin().read_line(&mut buf);
+                let index = match buf.trim().parse::<usize>(){
+                    Ok(id) => id - 1,
+                    Err(e) => {
+                        println!("Please enter a valid number!");
+                        continue 'running;
+                    }
+                };
+                if index >= tasks.len() {
+                    println!("Please enter a valid id!");
+                    continue 'running;
+                }
+                tasks.get_mut(index).unwrap().completed = true;
+            },
             Some('Q') | Some('q') => break 'running,
             _ => {}
         }
